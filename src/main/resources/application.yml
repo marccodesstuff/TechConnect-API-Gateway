@@ -3,9 +3,7 @@ server:
 
 spring:
   application:
-    name: tp-api-gateway
-
-spring:
+    name: api-gateway
   cloud:
     gateway:
       routes:
@@ -14,9 +12,19 @@ spring:
           predicates:
             - Path=/api/v1/auth/**
         - id: opportunity-route
-          uri: http://tp-opportunity-service:8081/
+          uri: lb://opportunity-service
           predicates:
             - Path=/api/v1/opportunities/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://discovery-server:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    hostname: api-gateway
 
 jwt:
   secret: change-me-please-256-bit-secret-change-me-please
