@@ -42,7 +42,10 @@ public class JwtAuthFilter implements GlobalFilter {
         String token = authHeader.substring(7);
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+            Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
             return chain.filter(exchange);
         } catch (Exception ex) {
             return unauthorized(exchange, "Invalid or expired token");
