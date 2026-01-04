@@ -14,7 +14,7 @@ spring:
         - id: opportunity-route
           uri: lb://opportunity-service
           predicates:
-            - Path=/api/v1/opportunities/**
+            - Path=/api/opportunities/**
 
 eureka:
   client:
