@@ -31,7 +31,7 @@ public class JwtAuthFilter implements GlobalFilter {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         String path = exchange.getRequest().getURI().getPath();
         // Allow auth endpoints through
-        if (path.startsWith("/api/v1/auth/") || path.equals("/api/v1/auth") ) {
+        if (path.startsWith("/api/v1/auth") || path.startsWith("/api/opportunities")) {
             return chain.filter(exchange);
         }
 
@@ -43,9 +43,9 @@ public class JwtAuthFilter implements GlobalFilter {
         try {
             SecretKey key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
             Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token);
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return chain.filter(exchange);
         } catch (Exception ex) {
             return unauthorized(exchange, "Invalid or expired token");
@@ -55,7 +55,8 @@ public class JwtAuthFilter implements GlobalFilter {
     private Mono<Void> unauthorized(ServerWebExchange exchange, String message) {
         exchange.getResponse().setStatusCode(org.springframework.http.HttpStatus.UNAUTHORIZED);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
-        Map<String, Object> body = Map.of("timestamp", java.time.Instant.now().toString(), "status", 401, "message", message, "data", null);
+        Map<String, Object> body = Map.of("timestamp", java.time.Instant.now().toString(), "status", 401, "message",
+                message, "data", null);
         byte[] bytes;
         try {
             bytes = objectMapper.writeValueAsBytes(body);
