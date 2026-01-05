@@ -8,7 +8,7 @@ spring:
     gateway:
       routes:
         - id: auth-route
-          uri: http://identity-service:8080/
+          uri: lb://opportunity-service
           predicates:
             - Path=/api/v1/auth/**
         - id: opportunity-route
